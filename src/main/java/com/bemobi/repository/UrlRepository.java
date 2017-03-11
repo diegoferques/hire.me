@@ -11,6 +11,7 @@ public interface UrlRepository extends CrudRepository<Url, Long>{
     public Url findById(Long id);
     public Url findByUrl(String url);
     public Url findByAlias(String alias);
+    public Url findByUrlAndCustomAlias(String url, int alias);
 
     public List<Url> findAllByOrderById();
     public List<Url> findAllByOrderByIdDesc();

@@ -1,16 +1,17 @@
 package com.bemobi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UrlResponse {
 
     private String errorCode;
     private String description;
-    private String alias;
+    private String originalUrl;
     private String url;
-    private Long timeTaken;
+    private String alias;
+    private String timeTaken;
+    private String domain;
 
     public String getErrorCode() {
         return errorCode;
@@ -28,12 +29,12 @@ public class UrlResponse {
         this.description = description;
     }
 
-    public String getAlias() {
-        return alias;
+    public String getOriginalUrl() {
+        return originalUrl;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
     }
 
     public String getUrl() {
@@ -44,11 +45,27 @@ public class UrlResponse {
         this.url = url;
     }
 
-    public Long getTimeTaken() {
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getTimeTaken() {
         return timeTaken;
     }
 
-    public void setTimeTaken(Long timeTaken) {
+    public void setTimeTaken(String timeTaken) {
         this.timeTaken = timeTaken;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

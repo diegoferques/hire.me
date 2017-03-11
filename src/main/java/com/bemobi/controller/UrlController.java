@@ -5,6 +5,7 @@ import com.bemobi.repository.UrlRepository;
 import com.bemobi.service.UrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.net.UnknownHostException;
 
 @RestController
 public class UrlController {
@@ -15,27 +16,19 @@ public class UrlController {
     @Autowired
     private UrlService service;
 
-    public UrlController() {
+    public UrlController() throws UnknownHostException {
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
     @ResponseBody
     String home() {
-        //repository.findByName();
         return "Acesso de forma incorreta!";
     }
 
     @RequestMapping(path = "/create?url={url}", method = RequestMethod.GET)
     @ResponseBody
     String show(@PathVariable String url) {
-        /*
-        Url url = repository.findByUrl(fullUrl);
-        url.setUrl(fullUrl);
-
-        repository.save(url);
-        */
         return url;
-
     }
 
     @RequestMapping(path = "/create", method = RequestMethod.PUT)
@@ -43,7 +36,7 @@ public class UrlController {
     public UrlResponse create(@RequestParam String url, @RequestParam(required = false) String alias) {
         Long timeStart = System.currentTimeMillis();
         UrlResponse urlResponse = service.shortenerUrl(url, alias);
-        urlResponse.setTimeTaken(System.currentTimeMillis() - timeStart);
+        urlResponse.setTimeTaken(String.valueOf(System.currentTimeMillis() - timeStart) + "ms");
 
         return urlResponse;
     }
@@ -52,7 +45,6 @@ public class UrlController {
     @ResponseBody
     String check(@RequestParam(required = false) String alias) {
         Boolean checkAlias = service.checkAlias(alias);
-        //Boolean checkAlias = true;
         String texto;
 
         if(checkAlias == true) {
