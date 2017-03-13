@@ -13,9 +13,6 @@ public class Url {
     private Long id;
 
     @Column(nullable = false)
-    private String originalUrl;
-
-    @Column(nullable = false)
     private String url;
 
     @Column(unique = true)
@@ -33,14 +30,6 @@ public class Url {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getOriginalUrl() {
-        return originalUrl;
-    }
-
-    public void setOriginalUrl(String originalUrl) {
-        this.originalUrl = originalUrl;
     }
 
     public String getUrl() {
