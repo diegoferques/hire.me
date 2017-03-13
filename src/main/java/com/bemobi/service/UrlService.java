@@ -29,6 +29,10 @@ public class UrlService {
     public UrlService() throws UnknownHostException {
     }
 
+    public String getDomain() {
+        return domain;
+    }
+
     public UrlResponse shortenerUrl(String url, String alias) {
         UrlResponse urlResponse = new UrlResponse();
 
@@ -68,9 +72,8 @@ public class UrlService {
 
             Url urlEntity = new Url();
 
-            urlEntity.setOriginalUrl(url);
             urlEntity.setAlias(shortenedAlias);
-            urlEntity.setUrl(shortenedUrl);
+            urlEntity.setUrl(url);
             urlEntity.setCustomAlias(customAlias);
 
             repository.save(urlEntity);
@@ -85,12 +88,37 @@ public class UrlService {
         return urlResponse;
     }
 
+    public UrlResponse retrieveUrl(String alias) {
+        Optional<Url> optionalUrl = Optional.ofNullable(repository.findByAlias(alias));
+        UrlResponse urlResponse = new UrlResponse();
+
+        String originalUrl = null;
+        String shortenedUrl = null;
+        String errorCode = null;
+        String description = null;
+
+        if(optionalUrl.isPresent()) {
+            Url url = optionalUrl.get();
+            originalUrl = url.getUrl();
+        } else {
+            errorCode = "002";
+            description = "SHORTENED URL NOT FOUND";
+        }
+
+        urlResponse.setOriginalUrl(originalUrl);
+        urlResponse.setAlias(alias);
+        urlResponse.setUrl(shortenedUrl);
+        urlResponse.setErrorCode(errorCode);
+        urlResponse.setDescription(description);
+
+        return urlResponse;
+
+    }
+
     public Boolean checkAlias(String alias) {
         Optional<Url> optionalUrl = Optional.ofNullable(repository.findByAlias(alias));
         return optionalUrl.isPresent();
     }
-
-
 
 
 }
