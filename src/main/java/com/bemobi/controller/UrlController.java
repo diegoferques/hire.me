@@ -3,12 +3,19 @@ package com.bemobi.controller;
 import com.bemobi.model.UrlResponse;
 import com.bemobi.repository.UrlRepository;
 import com.bemobi.service.UrlService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 @RestController
 public class UrlController {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UrlRepository repository;
@@ -25,15 +32,9 @@ public class UrlController {
         return "Acesso de forma incorreta!";
     }
 
-    @RequestMapping(path = "/create?url={url}", method = RequestMethod.GET)
-    @ResponseBody
-    String show(@PathVariable String url) {
-        return url;
-    }
-
     @RequestMapping(path = "/create", method = RequestMethod.PUT)
     @ResponseBody
-    public UrlResponse create(@RequestParam String url, @RequestParam(required = false) String alias) {
+    public UrlResponse shorten(@RequestParam String url, @RequestParam(required = false) String alias) {
         Long timeStart = System.currentTimeMillis();
         UrlResponse urlResponse = service.shortenerUrl(url, alias);
         urlResponse.setTimeTaken(String.valueOf(System.currentTimeMillis() - timeStart) + "ms");
@@ -41,18 +42,28 @@ public class UrlController {
         return urlResponse;
     }
 
-    @RequestMapping(path = "/check", method = RequestMethod.PUT)
+    @RequestMapping(path = "/u/{alias}", method = RequestMethod.GET)
     @ResponseBody
-    String check(@RequestParam(required = false) String alias) {
-        Boolean checkAlias = service.checkAlias(alias);
-        String texto;
+    public UrlResponse retrieveUrl(@PathVariable String alias, HttpServletResponse servletResponse) throws IOException {
+        UrlResponse urlResponse = service.retrieveUrl(alias);
 
-        if(checkAlias == true) {
-            texto = "Alias Encontrado!";
+        String url;
+
+        if(urlResponse.getErrorCode() != null) {
+            log.error("Erro ao obter a url encurtada. Erro = " +  urlResponse.getErrorCode());
+
+            return  urlResponse;
         } else {
-            texto = "Alias NÃO encontrado!";
-        }
+            url = "http://" + urlResponse.getOriginalUrl();
 
-        return texto;
+            servletResponse.setContentType("text/html");
+            servletResponse.sendRedirect(url);
+
+            log.info("Redirecionando para {}", url);
+
+            return null;
+        }
     }
+
+
 }
