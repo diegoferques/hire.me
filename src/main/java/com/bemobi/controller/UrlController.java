@@ -69,7 +69,6 @@ public class UrlController {
             log.error("Erro salvando url.", ex);
 
             return ResponseEntity.status(500).body(urlResponse);
-
         }
     }
 
