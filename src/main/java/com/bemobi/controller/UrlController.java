@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.*;
@@ -101,7 +102,13 @@ public class UrlController {
 
     @RequestMapping(path = "/mostUses", method = RequestMethod.GET)
     @ResponseBody
-    public List<UrlRespondeMostUses> mostUses() {
+    public List<UrlRespondeMostUses> mostUses(ServletResponse res, HttpServletResponse response) {
+        //response = (HttpServletResponse) res;
+        response.setHeader("Access-Control-Allow-Headers",
+                "Authorization, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
+                        "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
         List<UrlRespondeMostUses> urlRespondeMostUses = new ArrayList() {
         };
         List<Url> urlList = service.getMostUses();
