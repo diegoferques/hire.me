@@ -22,7 +22,7 @@ public class Url {
 
     private Long uses = Long.valueOf(0);
 
-    private Date dataHota = Calendar.getInstance().getTime();
+    private Date dataHora = Calendar.getInstance().getTime();
 
     public Long getId() {
         return id;
@@ -62,11 +62,11 @@ public class Url {
         this.uses = uses;
     }
 
-    public Date getDataHota() {
-        return dataHota;
+    public Date getDataHora() {
+        return dataHora;
     }
 
-    public void setDataHota(Date dataHota) {
-        this.dataHota = dataHota;
+    public void setDataHora(Date dataHora) {
+        this.dataHora = dataHora;
     }
 }

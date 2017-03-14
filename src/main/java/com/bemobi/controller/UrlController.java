@@ -41,8 +41,12 @@ public class UrlController {
 
     @RequestMapping(path = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<UrlResponse> shorten(@RequestParam String url, @RequestParam(required = false) String alias) {
+    public ResponseEntity<UrlResponse> shorten(@RequestParam String url,
+                                               @RequestParam(required = false) String alias,
+                                               HttpServletResponse response) {
         Long timeStart = System.currentTimeMillis();
+
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         try {
             URI u = new URI(url);
@@ -60,7 +64,9 @@ public class UrlController {
                 return ResponseEntity.ok(urlResponse);
             } else {
                 log.error("ERROR CODE {}.", urlResponse.getErrorCode());
-                return ResponseEntity.status(409).body(urlResponse);
+
+                //return ResponseEntity.status(409).body(urlResponse);
+                return ResponseEntity.status(200).body(urlResponse);
             }
 
         }
@@ -102,11 +108,14 @@ public class UrlController {
 
     @RequestMapping(path = "/mostUses", method = RequestMethod.GET)
     @ResponseBody
-    public List<UrlRespondeMostUses> mostUses(ServletResponse res, HttpServletResponse response) {
+    //public List<UrlRespondeMostUses> mostUses(ServletResponse res, HttpServletResponse response) {
+    public List<UrlRespondeMostUses> mostUses(HttpServletResponse response) {
         //response = (HttpServletResponse) res;
+        /*
         response.setHeader("Access-Control-Allow-Headers",
                 "Authorization, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
                         "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+        */
         response.setHeader("Access-Control-Allow-Origin", "*");
 
         List<UrlRespondeMostUses> urlRespondeMostUses = new ArrayList() {

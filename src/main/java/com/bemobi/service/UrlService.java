@@ -130,7 +130,7 @@ public class UrlService {
     }
 
     public List<Url> getMostUses() {
-        return repository.findFirst10ByOrderByUsesDesc();
+        return repository.findFirst10ByOrderByUsesDescDataHoraAsc();
     }
 
 

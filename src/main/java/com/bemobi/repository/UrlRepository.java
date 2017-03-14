@@ -17,6 +17,6 @@ public interface UrlRepository extends CrudRepository<Url, Long>{
     public List<Url> findAllByOrderByIdDesc();
     public List<Url> findAllByOrderByUrl();
     public List<Url> findAllByOrderByUrlDesc();
-    public List<Url> findFirst10ByOrderByUsesDesc();
+    public List<Url> findFirst10ByOrderByUsesDescDataHoraAsc();
 
 }
