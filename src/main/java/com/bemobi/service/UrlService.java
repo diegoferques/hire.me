@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -100,6 +101,14 @@ public class UrlService {
         if(optionalUrl.isPresent()) {
             Url url = optionalUrl.get();
             originalUrl = url.getUrl();
+
+            Long uses = url.getUses();
+            uses++;
+
+            url.setUses(uses);
+
+            repository.save(url);
+
         } else {
             errorCode = "002";
             description = "SHORTENED URL NOT FOUND";
@@ -118,6 +127,10 @@ public class UrlService {
     public Boolean checkAlias(String alias) {
         Optional<Url> optionalUrl = Optional.ofNullable(repository.findByAlias(alias));
         return optionalUrl.isPresent();
+    }
+
+    public List<Url> getMostUses() {
+        return repository.findFirst10ByOrderByUsesDesc();
     }
 
 

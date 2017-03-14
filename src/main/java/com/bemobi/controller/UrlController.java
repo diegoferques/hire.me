@@ -1,5 +1,6 @@
 package com.bemobi.controller;
 
+import com.bemobi.entity.Url;
 import com.bemobi.model.UrlResponse;
 import com.bemobi.repository.UrlRepository;
 import com.bemobi.service.UrlService;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.*;
+import java.util.List;
 
 @RestController
 public class UrlController {
@@ -96,6 +98,12 @@ public class UrlController {
             log.error("Internal Server Error {}", e);
             return urlResponse;
         }
+    }
+
+    @RequestMapping(path = "/mostUses", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Url> mostUses() {
+        return service.getMostUses();
     }
 
 }

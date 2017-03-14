@@ -20,7 +20,7 @@ public class Url {
 
     private int customAlias = 0;
 
-    private Long uses;
+    private Long uses = Long.valueOf(0);
 
     private Date dataHota = Calendar.getInstance().getTime();
 
@@ -56,9 +56,7 @@ public class Url {
         this.customAlias = customAlias;
     }
 
-    public Long getUses() {
-        return uses;
-    }
+    public Long getUses() { return uses; }
 
     public void setUses(Long uses) {
         this.uses = uses;
