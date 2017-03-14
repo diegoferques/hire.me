@@ -1,6 +1,7 @@
 package com.bemobi.controller;
 
 import com.bemobi.entity.Url;
+import com.bemobi.model.UrlRespondeMostUses;
 import com.bemobi.model.UrlResponse;
 import com.bemobi.repository.UrlRepository;
 import com.bemobi.service.UrlService;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -102,8 +104,29 @@ public class UrlController {
 
     @RequestMapping(path = "/mostUses", method = RequestMethod.GET)
     @ResponseBody
-    public List<Url> mostUses() {
-        return service.getMostUses();
+    public List<UrlRespondeMostUses> mostUses() {
+        List<UrlRespondeMostUses> urlRespondeMostUses = new ArrayList() {
+        };
+        List<Url> urlList = service.getMostUses();
+        int i = 0;
+
+        String domain = service.getDomain();
+
+        for (Url list : urlList) {
+            UrlRespondeMostUses mostUse = new UrlRespondeMostUses();
+
+            mostUse.setOrder(String.valueOf(i + 1));
+            mostUse.setOriginalUrl(list.getUrl());
+            mostUse.setAlias(list.getAlias());
+            mostUse.setShortenedUrl(domain + "/u/" + list.getAlias());
+            mostUse.setMostUses(String.valueOf(list.getUses()));
+
+            urlRespondeMostUses.add(mostUse);
+            i++;
+        }
+
+        //service.getMostUses();
+        return urlRespondeMostUses;
     }
 
 }

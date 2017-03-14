@@ -1,3 +1,6 @@
+th, td {
+    text-align: center;
+}
 .brCarbon {
     background: radial-gradient(black 15%, transparent 16%) 0 0,
             radial-gradient(black 15%, transparent 16%) 8px 8px,
