@@ -8,12 +8,9 @@ import com.bemobi.service.UrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -41,7 +38,7 @@ public class UrlController {
         return "Acesso de forma incorreta!";
     }
 
-    @RequestMapping(path = "/create", method = RequestMethod.PUT)
+    @RequestMapping(path = "/create", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<UrlResponse> shorten(@RequestParam String url, @RequestParam(required = false) String alias) {
         Long timeStart = System.currentTimeMillis();
