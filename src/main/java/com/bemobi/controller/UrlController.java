@@ -6,11 +6,13 @@ import com.bemobi.service.UrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.UnknownHostException;
+import java.net.*;
 
 @RestController
 public class UrlController {
@@ -54,16 +56,19 @@ public class UrlController {
 
             return  urlResponse;
         } else {
-            url = "http://" + urlResponse.getOriginalUrl();
 
-            servletResponse.setContentType("text/html");
-            servletResponse.sendRedirect(url);
-
-            log.info("Redirecionando para {}", url);
+            try {
+                URI u = new URI(urlResponse.getOriginalUrl());
+                servletResponse.sendRedirect(urlResponse.getOriginalUrl());
+                log.info("Redirecionando para {}", urlResponse.getOriginalUrl());
+            }
+            catch(Exception ex) {
+                servletResponse.setStatus(400);
+                log.error("Malformed url: {}", urlResponse.getOriginalUrl());
+            }
 
             return null;
         }
     }
-
 
 }
