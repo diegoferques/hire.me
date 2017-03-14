@@ -6,6 +6,9 @@ import com.bemobi.service.UrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,38 +39,63 @@ public class UrlController {
 
     @RequestMapping(path = "/create", method = RequestMethod.PUT)
     @ResponseBody
-    public UrlResponse shorten(@RequestParam String url, @RequestParam(required = false) String alias) {
+    public ResponseEntity<UrlResponse> shorten(@RequestParam String url, @RequestParam(required = false) String alias) {
         Long timeStart = System.currentTimeMillis();
-        UrlResponse urlResponse = service.shortenerUrl(url, alias);
-        urlResponse.setTimeTaken(String.valueOf(System.currentTimeMillis() - timeStart) + "ms");
 
-        return urlResponse;
+        try {
+            URI u = new URI(url);
+
+            if(StringUtils.isEmpty(u.getScheme()))
+            {
+                url = "http://" + url;
+            }
+
+            UrlResponse urlResponse = service.shortenerUrl(url, alias);
+            urlResponse.setTimeTaken(String.valueOf(System.currentTimeMillis() - timeStart) + "ms");
+
+            if(StringUtils.isEmpty(urlResponse.getErrorCode())) {
+                log.info("URL {} encurtada para {}.", url, urlResponse.getUrl());
+                return ResponseEntity.ok(urlResponse);
+            } else {
+                log.error("ERROR CODE {}.", urlResponse.getErrorCode());
+                return ResponseEntity.status(409).body(urlResponse);
+            }
+
+        }
+        catch(Exception ex) {
+            UrlResponse urlResponse = new UrlResponse();
+            urlResponse.setErrorCode("500");
+            urlResponse.setDescription("Internal Server Error");
+            log.error("Erro salvando url.", ex);
+
+            return ResponseEntity.status(500).body(urlResponse);
+
+        }
     }
 
     @RequestMapping(path = "/u/{alias}", method = RequestMethod.GET)
     @ResponseBody
     public UrlResponse retrieveUrl(@PathVariable String alias, HttpServletResponse servletResponse) throws IOException {
-        UrlResponse urlResponse = service.retrieveUrl(alias);
 
-        String url;
+        try {
+            UrlResponse urlResponse = service.retrieveUrl(alias);
 
-        if(urlResponse.getErrorCode() != null) {
-            log.error("Erro ao obter a url encurtada. Erro = " +  urlResponse.getErrorCode());
+            if(urlResponse.getErrorCode() != null) {
+                log.error("Erro ao obter a url encurtada. Erro = " +  urlResponse.getErrorCode());
 
-            return  urlResponse;
-        } else {
-
-            try {
-                URI u = new URI(urlResponse.getOriginalUrl());
+                return  urlResponse;
+            } else {
                 servletResponse.sendRedirect(urlResponse.getOriginalUrl());
                 log.info("Redirecionando para {}", urlResponse.getOriginalUrl());
+                return null;
             }
-            catch(Exception ex) {
-                servletResponse.setStatus(400);
-                log.error("Malformed url: {}", urlResponse.getOriginalUrl());
-            }
+        } catch (Exception e) {
+            UrlResponse urlResponse = new UrlResponse();
+            urlResponse.setErrorCode("500");
+            urlResponse.setDescription("Internal Server Error");
 
-            return null;
+            log.error("Internal Server Error {}", e);
+            return urlResponse;
         }
     }
 

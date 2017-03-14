@@ -13,7 +13,8 @@ public class ShortenerService {
         //https://google.github.io/guava/releases/19.0/api/docs/com/google/common/hash/Hashing.html
         String hashedUrl = Hashing.murmur3_32().hashString(url, StandardCharsets.UTF_8).toString();
 
-        return String.valueOf(System.nanoTime());
+        //return String.valueOf(System.nanoTime());
+        return hashedUrl;
     }
 
 }
